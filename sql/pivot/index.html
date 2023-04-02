@@ -1,0 +1,182 @@
+---
+layout: ref
+title: SQL PIVOT
+description: "The goal of SQL PIVOT is to take some rows' (or dimension’s) values and use them as metrics, in new columns."
+previous_ref: /sql/percent-rank/
+---
+
+<p>A SQL table is made of columns and rows. We can also think about it as made of dimensions and metrics.</p>
+<p>Metrics are used to measure things and are number-based. For example, a number of items in inventory. Dimensions are used to describe things, so they are usually text-based, for example, the names of distribution centers, or the categories of products.</p>
+
+<p style="background-color:white"><img src="images/dimensions-and-metrics.svg" class="lesson-img" /></p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">PIVOT</span></h3>
+<p>The goal of the pivoting operation is to take some dimension’s values and use them as metrics, in new columns:</p>
+<p style="background-color:white"><img src="images/example.svg" class="lesson-img" /></p>
+
+<p>To achieve, this, you can use the <code>PIVOT</code> operator.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+WITH distribution_centers_product_categories AS
+  ( SELECT        centers.name AS distribution_center,
+                  inventory_items.product_category AS product_category
+
+      FROM        bigquery-public-data.thelook_ecommerce.distribution_centers AS centers
+      INNER JOIN  bigquery-public-data.thelook_ecommerce.inventory_items AS inventory_items
+      ON          centers.id = inventory_items.product_distribution_center_id
+  ),
+
+  inventory_items_by_category_and_center AS
+  ( SELECT    distribution_center,
+              product_category,
+              COUNT(*) AS inventory_items
+
+      FROM    distribution_centers_product_categories
+    GROUP BY  distribution_center, product_category
+  )
+
+  SELECT    *
+    FROM    inventory_items_by_category_and_center
+    PIVOT   (
+              SUM(inventory_items)
+              FOR product_category
+              IN  (
+                'Jeans',
+                'Swim',
+                'Leggings',
+                'Shorts',
+                'Pants'
+              )
+            )
+
+  ORDER BY  RAND();
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+<p>The <code>PIVOT</code> operator is part of the <code>FROM</code> clause. Similar to the <code>JOIN</code>s, it comes after the source table, from which it does the transformation. As you can see above, the <code>PIVOT</code> operator has 3 components:</p>
+<ol>
+  <li>How the new metrics should be calculated (in the example above: <code>SUM(inventory_items)</code>).</li>
+  <li>The dimension whose values should be taken to be used as metrics (in the example above: <code>FOR product_category</code>).</li>
+  <li>The specific values we want to use as metrics (in the example above: <code>IN ( 'Jeans', 'Swim', 'Leggings', 'Shorts', 'Pants' )</code>).</li>
+</ol>
+
+<p>Good to know:</p>
+<blockquote>The same results can be accomplished by using a combination of <code>CASE WHEN</code> and <code>GROUP BY</code>. That will be the topic of one of our practice problems for this lesson.</blockquote>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°1 — Number of Google Analytics event types  by user using the built-in PIVOT operator&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</p>
+
+  <h4>Task</h4>
+  <p>Using the built-in <code>PIVOT</code> operator, write a query that will display, by user, in January 2021, the number of occurrences of each of the following event types (<strong>event_name</strong> column):</p>
+  <ul>
+    <li>session_start</li>
+    <li>page_view</li>
+    <li>view_item_list</li>
+    <li>select_item_list</li>
+    <li>view_item</li>
+    <li>add_to_cart</li>
+    <li>begin_checkout</li>
+    <li>purchase</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      *
+  FROM      (
+              SELECT  user_pseudo_id, event_name
+                FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+                WHERE _table_suffix BETWEEN '20210101' AND '20210131'
+            )
+
+            PIVOT (
+              COUNT(*)
+                FOR event_name
+                IN  (
+                  'session_start', 
+                  'page_view',
+                  'view_item_list',
+                  'select_item_list',
+                  'view_item',
+                  'add_to_cart', 
+                  'begin_checkout',
+                  'purchase'
+                )
+            )
+
+  ORDER BY  purchase DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="hard-problem-text-span">N°2 — Number of Google Analytics event types by user WITHOUT using the built-in operator&nbsp;🔥</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</p>
+
+  <h4>Task</h4>
+  <p><code>WITHOUT</code> using the built-in <code>PIVOT</code> operator, write a query that will display, by user, in January 2021, the number of occurrences of each of the following event types (event_name):</p>
+  <ul>
+    <li>session_start</li>
+    <li>page_view</li>
+    <li>view_item_list</li>
+    <li>select_item_list</li>
+    <li>view_item</li>
+    <li>add_to_cart</li>
+    <li>begin_checkout</li>
+    <li>purchase</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH user_events AS
+  ( SELECT  user_pseudo_id, event_name
+      FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+      WHERE _table_suffix BETWEEN '20210101' AND '20210131'
+  )
+
+SELECT      user_pseudo_id,
+            COUNT(CASE WHEN event_name = 'session_start' THEN 1 END) AS session_start,
+            COUNT(CASE WHEN event_name = 'page_view' THEN 1 END) AS page_view,
+            COUNT(CASE WHEN event_name = 'view_item_list' THEN 1 END) AS view_item_list,
+            COUNT(CASE WHEN event_name = 'select_item_list' THEN 1 END) AS select_item_list,
+            COUNT(CASE WHEN event_name = 'view_item' THEN 1 END) AS view_item,
+            COUNT(CASE WHEN event_name = 'add_to_cart' THEN 1 END) AS add_to_cart,
+            COUNT(CASE WHEN event_name = 'begin_checkout' THEN 1 END) AS begin_checkout,
+            COUNT(CASE WHEN event_name = 'purchase' THEN 1 END) AS purchase
+  
+  FROM      user_events
+  GROUP BY  user_pseudo_id
+  ORDER BY  purchase DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

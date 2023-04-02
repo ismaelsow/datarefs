@@ -1,0 +1,195 @@
+---
+layout: ref
+title: SQL ORDER BY
+description: "If we want to ensure a specific order when displaying the result set, we can use the SQL ORDER BY clause. By default, rows are sorted in ascending order."
+previous_ref: /sql/not/
+next_ref: /sql/offset/
+---
+
+<p>By default, the results returned by a <code>SELECT</code> query are not sorted in any specific order. By default, the order of the results is not guaranteed. If we want to ensure a specific order when displaying the result set, we can use the SQL <code>ORDER BY</code> clause. By default, rows are sorted in ascending order.</p>
+
+<!-- Example 1 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT      name, retail_price, cost
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  ORDER BY  retail_price
+  LIMIT     10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+<!-- Example 2 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p>We can use the <code>ASC</code> keyword to specify an ascending sort explicitly.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT      name, retail_price, cost
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  ORDER BY  retail_price ASC
+  LIMIT     10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+<!-- Example 3 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 3</span></h3>
+<p>We must use the <code>DESC</code> keyword to specify a descending sort.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT      name, retail_price, cost
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  ORDER BY  retail_price DESC
+  LIMIT     10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-3.png" class="lesson-img" /></p>
+
+<!-- Example 4 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 4</span></h3>
+<p>We can sort the results using several successive columns.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT      name, cost, retail_price
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  ORDER BY  cost DESC, 
+            retail_price DESC
+  LIMIT     10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-4.png" class="lesson-img" /></p>
+
+<!-- SQL order of operations -->
+<h3 class="h3-big-margin"><span class="grey-text-span">SQL conceptual order of operations</span></h3>
+<p>Here is a <strong>partial</strong> view of the <strong>logical</strong> order in which the database engine evaluates the components of our <code>SELECT</code> queries.</p>
+<div class="table-wrapper">
+  <table class="table-with-header">
+    <thead><th>Step</th><th>Clause</th><th>Description</th></thead>
+    <tbody>
+      <tr><td>1</td><td>FROM</td><td>Chooses the data to get the data from.</td></tr>
+      <tr><td>2</td><td>WHERE</td><td>Filters the data.</td></tr>
+      <tr><td>4</td><td>SELECT</td><td>Displays the results.</td></tr>
+      <tr><td>4</td><td>ORDER BY</td><td>Sort the results.</td></tr>
+      <tr><td>3</td><td>LIMIT</td><td>Limits the number of rows displayed.</td></tr>
+    </tbody>
+  </table>
+</div>
+<p>Note that this is a conceptual, logical view of the process. In practice, the database engine will optimize the way it processes the query depending on various factors. In BigQuery, we should always refer to the official Google Standard SQL documentation on <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#alias_visibility" target="_blank">alias visibility rules</a>. Please read them. 😉</p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Names of the 10 youngest users&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display the names of up to 10 of the youngest users, sorted by age from youngest to oldest.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      first_name, last_name, age
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  ORDER BY  age ASC
+  LIMIT     10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°2 — Names of the 5 youngest and most recent users&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display the names of up to 5 of the youngest and most recent users, sorted by age from youngest to oldest, and by creation date from most recent to less recent.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      first_name, last_name, age, created_at
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  ORDER BY  age ASC, created_at DESC
+  LIMIT     10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°3 — 12 products with the highest profit margin ratio (in %), ranked by profit margin ratio from top to bottom&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will show the profit margin ratio in percentage for each product.</li>
+    <li>Only display up to 12 rows.</li>
+    <li>The <strong>profit_margin_ratio_per_product</strong> column is defined as the difference between the retail price and the cost, divided by the retail price, and expressed as a percentage (i.e multiplied by 100).</li>
+    <li>We also want the returned records to have a profit margin ratio to be greater or equal to 50%.</li>
+    <li>Rank the rows by profit margin ratio from highest to lowest, retail price from highest to lowest, and cost from lowest to highest.</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-3.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      id,
+            name,
+            cost,
+            retail_price,
+            ((retail_price - cost) / retail_price) * 100 AS profit_margin_ratio_per_product
+  
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  WHERE     ((retail_price - cost) / retail_price) * 100 >= 50
+  
+  ORDER BY  profit_margin_ratio_per_product DESC,
+            retail_price DESC,
+            cost ASC
+  LIMIT     12;
+        </code>
+      </pre>
+      <p>We can not use the <strong>profit_margin_ratio_per_product</strong> alias in our <code>WHERE</code> clause because, as per <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax#select-list_aliases" target="_blank">Google Standard SQL's alias visibility rules</a>, aliases defined in the <code>SELECT</code> list are visible only to the following clauses:</p>
+      <ul>
+        <li><code>GROUP BY</code></li>
+        <li><code>ORDER BY</code></li>
+        <li><code>HAVING</code></li>
+      </ul>
+      <p>The solution is simply to reuse the required calculation in the <code>WHERE</code> clause, since the calculation only uses prexisting column names.</p>
+    </div>
+  </div>
+</div>

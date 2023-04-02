@@ -1,0 +1,584 @@
+---
+layout: ref
+title: SQL window functions
+description: "SQL window functions use a group of rows from one column and return one value as a result."
+previous_ref: /sql/recursive-query/
+next_ref: /sql/row-number/
+---
+
+<p>Window functions are functions that:</p>
+<ul>
+  <li><strong>operate like normal scalar functions</strong>: for 1 column value, they return 1 scalar result. Scalar meaning 1 value, not a table or set of rows.</li>
+  <li><strong>but use a group of rows (a window) as input</strong> to compute the scalar value that’s returned. The input could be the entire column, but it's usually about subsets of the column.</li>
+</ul>
+
+<p>They are very useful to compute percentages, subtotals, cumulative or rolling calculations.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT  *, ROW_NUMBER() OVER () AS row_num
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers;
+    </code>
+  </pre>
+</p>
+
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+<p><strong>Notes:</strong></p>
+<ul>
+  <li><code>ROW_NUMBER()</code> ⇒ <code>ROW_NUMBER</code> is the actual window function, called here without parameters. <code>ROW_NUMBER</code> is a function that returns the index of the current row in the group of rows (window) that’s used as input.</li>
+  <li><code>OVER()</code> ⇒ is a special clause that must follow any call to a window function. This is where we define the group of rows (or windows) to use as input for the window function. When <code>OVER()</code> is called without parameters, then the window that’s used is the entire column.</li>
+</ul>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT  *,  ROW_NUMBER() OVER (PARTITION BY name) AS row_num
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+<p><strong>Notes:</strong></p>
+<ul>
+  <li><code>OVER(PARTITION BY id)</code> ⇒ here we define a specific window to use for each row. In this example, a window is the group of rows that have the same name as the current row.</li>
+  <li>Since there’s currently only one row for each name, for each row, the window defined has only one row, so the row number is always 1.</li>
+</ul>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 3</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT  user_id,
+        order_id,
+        created_at,
+        num_of_item,
+        ROW_NUMBER() OVER (PARTITION BY user_id) AS order_number
+  
+  FROM  bigquery-public-data.thelook_ecommerce.orders;
+    </code>
+  </pre>
+</p>
+<p><img src="images/windows.png" class="lesson-img" /></p>
+<p><strong>Notes:</strong></p>
+<ul>
+  <li>The goal of this query is to assign a number to the orders of each user. For example for user <strong>id 401</strong>, <strong>order id 508</strong> could is the first returned by the query, and <strong>order id 507</strong> is the second that have been returned by the query.</li>
+  <li><code>OVER(PARTITION BY user_id)</code> ⇒ here we define a specific window to use for each row. In this example, the window is the group of rows that have the same user_id as the current row.</li>
+  <li>You can see that some of the <strong>order_number</strong> values seem to be "missing" from their window. For example, for <strong>user_id 1791</strong>, we have <strong>order_number 3</strong> but <strong>order_number 1 and 2</strong> are not visible. It’s because for now, our table is displayed without any particular order.</li>
+</ul>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 4</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            created_at,
+            ROW_NUMBER() OVER (PARTITION BY user_id) AS order_number
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><img src="images/windows-2.png" class="lesson-img" /></p>
+<p><strong>Notes:</strong></p>
+<ul>
+  <li>Here we can see that by using our usual <code>ORDER BY</code> clause, after the <code>FROM</code> clause, we can order the result (here by user_id) and see the totality of our windows.</li>
+  <li>But we can see another issue. If we look at the <strong>user_id 1</strong> window, we can see that the orders in the window are not sorted. We have <strong>order_id 1</strong>, then <strong>order_id 3</strong>, then <strong>order_id 4</strong>, then <strong>order_id 2</strong>. Same thing for the <strong>created_at</strong> column. How could we sort the rows inside our windows by <strong>order_id</strong> or <strong>created_at</strong>?</li>
+</ul>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 5</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            created_at,
+            ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY order_id ASC) AS order_number
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-5.png" class="lesson-img" /></p>
+<p><strong>Notes:</strong></p>
+<p><code>OVER (PARTITION BY user_id ORDER BY order_id ASC)</code> ⇒ by using the <code>ORDER BY</code> clause inside the <code>OVER</code> clause, we can sort each of our windows in the order we want. Here we are sorting by <strong>order_id</strong>.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 6</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            created_at,
+            ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS order_number
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-6.png" class="lesson-img" /></p>
+<p><strong>Notes:</strong></p>
+<p><code>OVER (PARTITION BY user_id ORDER BY created_at DESC)</code> ⇒ by using the <code>ORDER BY</code> clause inside the <code>OVER</code> clause, we can sort each of our windows in the order we want. Here we are sorting by <strong>created_at</strong>.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 7</span></h3>
+<p>We can use any of the usual aggregate functions as window functions: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MAX</code>, <code>MIN</code> etc.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            COUNT(*) OVER (PARTITION BY user_id) AS order_count
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-7.png" class="lesson-img" /></p>
+<p>Note that in this example, since we are using an aggregate function, the calculated value (<strong>order_count</strong>) is the same among each window's rows.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 8</span></h3>
+<p>In addition to sort the rows inside each window, using the <code>ORDER BY</code> clause in the <code>OVER()</code> function will cause a cumulative calculation for each row. The calculated value will then be different for every rows of each window. <strong>Compare this example with the previous one</strong>.</p>
+
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            COUNT(*) OVER (PARTITION BY user_id ORDER BY order_id ASC) AS order_count
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-8.png" class="lesson-img" /></p>
+
+<p><strong>👈 How do cumulative aggregations work behind the hood?</strong></p>
+<blockquote> Inside each window is a series of rows called window frames. Some window functions consider only window frame rows, not the entire set of rows in a window. <code>SUM</code> is such a function.</blockquote>
+<blockquote>By default, the window frame has all rows of the window. Things change when the <code>OVER</code> clause has an <code>ORDER BY</code> statement. It narrows the window frame to the rows from the start of the window to the current row + all subsequent rows with the same <code>ORDER BY</code> value.</blockquote>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 9</span></h3>
+<p>Using <code>SUM</code> as a window function (non cumulative example):</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            SUM(num_of_item) OVER (PARTITION BY user_id) AS sum_items
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-9-1.png" class="lesson-img" /></p>
+
+<p>Using <code>SUM</code> as a window function (cumulative aggregation example):</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            SUM(num_of_item) OVER (PARTITION BY user_id ORDER BY order_id ASC) AS sum_items
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-9-2.png" class="lesson-img" /></p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 10</span></h3>
+<p>Using <code>AVG</code> as a window function (non cumulative example):</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            AVG(num_of_item) OVER (PARTITION BY user_id) AS avg_items
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-10-1.png" class="lesson-img" /></p>
+
+<p>Using <code>AVG</code> as a window function (cumulative aggregation example):</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      user_id,
+            order_id,
+            num_of_item,
+            AVG(num_of_item) OVER (PARTITION BY user_id ORDER BY order_id ASC) AS avg_items
+  
+  FROM      bigquery-public-data.thelook_ecommerce.orders
+  ORDER BY  user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-10-2.png" class="lesson-img" /></p>
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Product category with the most products&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+
+  <h4>Task</h4>
+  <p>Display the name of the product category with the most products, along with this number.</p>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>category</th><th>product_count</th></thead>
+      <tbody>
+        <tr><td>Intimates</td><td>2363</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      category,
+            COUNT(*) OVER(PARTITION BY category) AS product_count
+  FROM      bigquery-public-data.thelook_ecommerce.products
+  ORDER BY  product_count DESC
+  LIMIT     1;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°2 — Average retail prices per category&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the average retail price per category</li>
+    <li>Sorted by retail price in descending order</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH subquery AS
+  ( SELECT  category,
+            ROUND(AVG(retail_price) OVER(PARTITION BY category), 2) AS avg_retail_price
+      FROM  bigquery-public-data.thelook_ecommerce.products
+  )
+
+SELECT      category,
+            MAX(avg_retail_price) AS avg_retail_price
+  FROM      subquery
+  GROUP BY  category
+  ORDER BY  avg_retail_price DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°3 — Youngest and oldest age per country&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the lowest and highest age numbers for each country, for people who signed up in 2022</li>
+    <li>Sort the results by country in ascending order</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-3.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH subquery AS
+  (  SELECT country,
+            MIN(age) OVER(PARTITION BY country) AS min_age,
+            MAX(age) OVER (PARTITION BY country) AS max_age
+      FROM  bigquery-public-data.thelook_ecommerce.users
+      WHERE FORMAT_DATE('%Y', created_at) = '2022'
+  )
+
+SELECT      country,
+            MIN(min_age) AS min_age,
+            MAX(max_age) AS max_age
+  FROM      subquery
+  GROUP BY  country
+  ORDER BY  country ASC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="hard-problem-text-span">N°4 — Number of individual product sales vs average number of product sales per category&nbsp;🔥</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+  <p>bigquery-public-data.thelook_ecommerce.order_items</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will:</p>
+  <ul>
+    <li>display the product id</li>
+    <li>display the product name</li>
+    <li>display the number of individual product sales</li>
+    <li>display the product category</li>
+    <li>display the average product sales per category</li>
+    <li>display the comparison percentage (how many % higher or lower are the individual product sales compared with the category average)</li>
+    <li>exclude the products whose names are <code>NULL</code></li>
+    <li>sort the results randomly</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-4.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH products_and_order_items AS
+  ( SELECT        products.id,
+                  category,
+                  name
+
+      FROM        bigquery-public-data.thelook_ecommerce.products products
+      INNER JOIN  bigquery-public-data.thelook_ecommerce.order_items order_items
+      ON          products.id = order_items.product_id
+  ),
+  
+  individual_product_sales AS
+  ( SELECT      id,
+                name,
+                COUNT(*) AS sales,
+                category
+
+      FROM      products_and_order_items
+      GROUP BY  id,
+                name,
+                category
+  ),
+
+  category_avg_sales AS
+  ( SELECT  category,
+            AVG(sales) OVER (PARTITION BY category) AS category_avg_sales
+      FROM  individual_product_sales
+  )
+
+SELECT        id,
+              name,
+              sales,
+              i.category,
+              ROUND(category_avg_sales, 2) AS category_avg_sales,
+              CONCAT(ROUND(((sales - category_avg_sales) / category_avg_sales) * 100, 2), '%') AS product_vs_category_comparison_percentage
+  
+  FROM        individual_product_sales i
+  INNER JOIN  category_avg_sales c
+  ON          i.category = c.category
+  WHERE       name IS NOT NULL
+  ORDER BY    RAND();
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°5 — Percentage of total revenue per category in 2022&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+  <p>bigquery-public-data.thelook_ecommerce.order_items</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the percentage of the total revenue for each product category in 2022.</li>
+    <li>Sort the results by the category percentage in descending order</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-5.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH total_revenue AS
+  ( SELECT  SUM(sale_price) AS revenue
+    FROM    bigquery-public-data.thelook_ecommerce.order_items
+    WHERE   FORMAT_DATE('%Y', created_at) = '2022'
+  ),
+
+  product_category_revenue AS
+  ( SELECT        p.id, category, sale_price, o.created_at
+      FROM        bigquery-public-data.thelook_ecommerce.products AS p
+      INNER JOIN  bigquery-public-data.thelook_ecommerce.order_items AS o
+      ON          p.id = o.product_id
+      WHERE       FORMAT_DATE('%Y', created_at) = '2022'
+  ),
+
+  category_revenue AS
+  ( SELECT  category,
+            SUM(sale_price) OVER(PARTITION BY category) AS revenue
+      FROM  product_category_revenue
+  )
+
+SELECT      category,
+            ROUND(MAX(revenue), 2) AS category_revenue,
+            ROUND((SELECT revenue FROM total_revenue), 2) AS total_revenue,
+            ROUND((MAX(revenue) / (SELECT revenue FROM total_revenue) * 100), 2) AS category_percentage
+  
+  FROM      category_revenue
+  GROUP BY  category
+  ORDER BY  category_percentage DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°6 — Cumulative daily orders of specific customers&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.order_items</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the cumulative number of orders of the following users each day that they made a purchase: user id 49, 52, 53, 80, 81.</li>
+    <li>Do not display dates where there were no orders from these users.</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-6.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH user_selection_orders AS
+  ( SELECT  created_at, order_id
+      FROM  bigquery-public-data.thelook_ecommerce.orders
+      WHERE user_id IN (49, 52, 53, 80, 81)
+  )
+
+SELECT  CAST(created_at AS DATE) AS order_date,
+        COUNT(order_id) OVER(ORDER BY CAST(created_at AS DATE) ASC) AS cumulative_orders
+  FROM  user_selection_orders;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°7 — Cumulative daily spend of specific customers&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.order_items</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the cumulative spend of the following users each day that they made a purchase: user id 49, 52, 53, 80, 81.</li>
+    <li>Do not display dates where there were no spending from these users.</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-7.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH user_selection_orders_items AS
+  ( SELECT  created_at, sale_price
+      FROM  bigquery-public-data.thelook_ecommerce.order_items
+      WHERE user_id IN (49, 52, 53, 80, 81)
+  ),
+
+  raw_cumulative_spend AS
+  ( SELECT  CAST(created_at AS DATE) AS date_of_spend,
+            SUM(sale_price) OVER(ORDER BY CAST(created_at AS DATE) ASC) AS cumulative_spend
+      FROM  user_selection_orders_items
+  )
+
+SELECT  date_of_spend,
+        ROUND(cumulative_spend, 2) AS cumulative_spend
+  FROM  raw_cumulative_spend;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

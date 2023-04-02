@@ -1,0 +1,24 @@
+<html>
+  {% include header.html %} 
+
+  <body>
+    <section class="container top-section">
+      <div class="row">
+        <div class="col-lg-3"></div>
+
+        <div class="col-xs-12 col-lg-6">
+          {% include navigation.html %}
+
+          <h1 class="lesson-title">{{ page.title }}</h1>
+
+          {{ content }}
+
+        </div>
+
+        <div class="col-lg-3"></div>
+      </div>  
+    </section> 
+
+    {% include footer.html %} 
+  </body>
+</html>

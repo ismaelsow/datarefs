@@ -1,0 +1,71 @@
+---
+layout: ref
+title: SQL PERCENT_RANK
+description: "SQL PERCENT_RANK is a window function used to calculate the percentile of each row within a window. As a reminder, in you are in the 90th percentile (percentile is 0.9), it means that you are in the top 10%."
+previous_ref: /sql/nth-value/
+next_ref: /sql/pivot/
+---
+
+<p>SQL <code>PERCENT_RANK</code> is a window function used to calculate the percentile of each row within a window. As a reminder, in you are in the 90th percentile (percentile is 0.9), it means that you are in the top 10%.</p>
+<p>It doesn’t take any parameters but the <code>ORDER BY</code> clause is required in the <code>OVER</code> function.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT    id,
+          name,
+          retail_price,
+          PERCENT_RANK() OVER(ORDER BY retail_price ASC) AS percentile
+  
+  FROM    bigquery-public-data.thelook_ecommerce.products
+ORDER BY  retail_price DESC;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Average Google Analytics order value, for orders in 90th percentile in January 2021&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display the average revenue value of orders that are in the 90th percentile, in January 2021.</p>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>ninetieth_percentile_avg_order_value</th></thead>
+      <tbody>
+        <tr><td>195.04</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH order_percentiles AS
+  ( SELECT  ecommerce.purchase_revenue AS order_value,
+            PERCENT_RANK() OVER(ORDER BY ecommerce.purchase_revenue ASC) AS percentile
+      FROM  example_dataset.valid_purchase_events('20210101', '20210131')
+  )
+
+SELECT  ROUND(AVG(order_value), 2) AS ninetieth_percentile_avg_order_value
+  FROM  order_percentiles
+  WHERE percentile >= 0.9;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

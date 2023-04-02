@@ -1,0 +1,134 @@
+---
+layout: ref
+title: Main SQL data types and type conversion
+description: "All values stored in a relational database column must have the same type. There are different types used for text values, numeric values, dates etc."
+previous_ref: /sql/distinct/
+next_ref: /sql/numbers/
+---
+
+<p>All values stored in a relational database column must have the same type. There are different types used for text values, numeric values, dates etc.</p>
+<p>
+  <figure><img src="images/schema.png" class="lesson-img" /><figcaption></figcaption></figure>
+  In the TheLook Ecommerce database's schema above, you can see how each colum's type is defined: <strong>int</strong> for integers, <strong>float</strong> for decimal values, <strong>string</strong> for text values, <strong>timestamp</strong> for date/time related values.
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Common data types</span></h3>
+
+<table class="table-with-header">
+  <thead><th>Name</th><th>Description</th></thead>
+  <tbody>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#boolean_type" target="_blank">BOOL</a></td>
+      <td>Boolean values are represented by the keywords <code>TRUE</code> and <code>FALSE</code> (case-insensitive). They are used to define conditions in the <code>WHERE</code> and <code>HAVING</code> clauses, and with the <code>!=</code> and <code>=</code> comparison operators.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#numeric_types" target="_blank">Numeric types</a></td>
+      <td><p>Numeric types include the following types, used for different levels of precision:</p>
+        <ul>
+          <li><code>INT64</code> with alias <code>INT</code>, <code>SMALLINT</code>, <code>INTEGER</code>, <code>BIGINT</code>, <code>TINYINT</code>, <code>BYTEINT</code></li>
+          <li><code>NUMERIC</code> with alias <code>DECIMAL</code></li>
+          <li><code>BIGNUMERIC</code> with alias <code>BIGDECIMAL</code></li>
+          <li><code>FLOAT64</code></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#string_type" target="_blank">STRING</a></td>
+      <td>Variable-length character (Unicode) data. Used for text values (including single characters).</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type" target="_blank">DATE</a></td>
+      <td>The date type represents a logical calendar date, independent of time zone. Usual format is <code>'YYYY-MM-DD'</code>.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#date_type" target="_blank">DATETIME</a></td>
+      <td>A datetime value represents a date and time, as they might be displayed on a watch, independent of time zone. It includes the year, month, day, hour, minute, second, and subsecond. Usual format is  <code>YYYY-MM-DD HH:MM:SS</code>.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_type" target="_blank">TIME</a></td>
+      <td>A time value represents a time of day, as might be displayed on a clock, independent of a specific date and time zone. Range is <code>00:00:00</code> to <code>23:59:59.999999</code>.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#time_type" target="_blank">TIMESTAMP</a></td>
+      <td>A timestamp value represents an absolute point in time, independent of any time zone or convention such as Daylight Savings Time, with microsecond precision. A timestamp is typically represented internally as the number of elapsed microseconds since a fixed initial point in time. Range is <code>0001-01-01 00:00:00</code> to <code>9999-12-31 23:59:59.999999 UTC</code>.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#interval_type" target="_blank">INTERVAL</a></td>
+      <td>An interval object represents duration or amount of time. Interval is composed of three independent parts:• <code>[sign]Y-M</code>: Years and Months. <code>[sign]D</code>: Days. <code>[sign]H:M:S.F</code>: Hours, Minutes, Seconds and Subseconds. Canonical format is <code>[sign]Y-M [sign]D [sign]H:M:S[.F]</code>.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#struct_type" target="_blank">STRUCT</a></td>
+      <td>Also referred to as <strong>RECORD</strong>. Container of ordered fields each with a type (required) and field name (optional). For example we could be dealing with cars, defined by a set of fields (brand_name, price, color etc.)</td>
+    </tr>
+    <tr>
+      <td><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/data-types#array_type" target="_blank">ARRAY</a></td>
+      <td>Ordered list of zero or more elements of any non-array type. For example, we could be dealing with a fleet of cars.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Main conversion functions</span></h3>
+<p>In some cases, some data can be converted from one type to another. For example, from <code>STRING</code> to <code>NUMERIC</code>.
+<blockquote>Google Standard SQL for BigQuery supports conversion functions. These data type conversions are explicit, but some conversions can happen implicitly.<br><br><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions" target="_blank">https://cloud.google.com/bigquery/docs/reference/standard-sql/conversion_functions</a></blockquote>
+<p>The main conversion functions are:</p>
+<ul>
+  <li><code>CAST</code></li>
+  <li><code>SAFE_CAST</code></li>
+</ul>
+
+<!-- Example 1 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p>With the <code>CAST</code> function, we can for example, convert a number to a string.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT CAST(250 AS STRING) AS string_from_text;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<div class="table-wrapper">
+  <table class="table-with-header">
+    <thead><th>string_from_text</th></thead>
+    <tbody>
+      <tr><td>250</td></tr>
+    </tbody>
+  </table>
+</div>
+<p>It's not visible on the screen, but the date internally went from <code>250</code> to <code>'250'</code>.</p>
+
+<p>👉 Learn more on <a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules">the BigQuery conversion rules and type coercion</a> page from the official documentation.</p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Converting created_at timestamp into other time types&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>The <strong>created_at</strong> column in the TheLook Ecommerce dataset is actually not of the <code>DATE</code> type, but is instead of the <code>TIMESTAMP</code> type.
+  <p>Write a query that will convert the created_at column to the <code>DATE</code>, and <code>TIME</code> types.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id,
+        email,
+        created_at,
+        CAST(created_at AS DATE) AS created_at_date,
+        CAST(created_at AS TIME) AS created_at_time
+  
+  FROM  bigquery-public-data.thelook_ecommerce.users;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

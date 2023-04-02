@@ -1,0 +1,25 @@
+<html>
+  {% include header.html %} 
+
+  <body>
+    <section class="container top-section">
+      <div class="row">
+        <div class="col-lg-2"></div>
+
+        <div class="col-xs-12 col-lg-8">
+          {% include navigation.html %}
+          <h1 class="lesson-title">{{ page.title }}</h1>
+          {{ content }}
+
+          <div class="newsletter-form">
+            <script async data-uid="3adeccc753" src="https://datatrefs.ck.page/3adeccc753/index.js"></script>
+          </div> 
+        </div>
+
+        <div class="col-lg-2"></div>
+      </div>  
+    </section> 
+
+    {% include footer.html %} 
+  </body>
+</html>

@@ -1,0 +1,141 @@
+---
+layout: ref
+title: SQL AND OR
+description: "We can combine multiple conditions in our WHERE clause using the SQL AND and SQL OR keywords. They specify conditions that ALL need to be true, or conditions where AT LEAST ONE needs to be true."
+previous_ref: /sql/isnull/
+next_ref: /sql/not/
+---
+
+<p>We can combine multiple conditions in our <code>WHERE</code> clause. We use the SQL <code>AND</code> keyword to specify conditions that <strong>ALL</strong> need to be true.</p>
+
+<p>We can also use the SQL <code>OR</code> keyword to combine multiple conditions in our <code>WHERE</code> clause. We use the <code>OR</code> keyword to specify conditions where <strong>AT LEAST ONE</strong> needs to be true</p>
+
+<!-- Example 1 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  id, email, country, traffic_source
+  FROM  bigquery-public-data.thelook_ecommerce.users
+  WHERE country = 'France' AND traffic_source IN ('Facebook', 'Email')
+  LIMIT 10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+<!-- Example 2 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  id, first_name, last_name, email, state, city, country
+  FROM  bigquery-public-data.thelook_ecommerce.users
+  WHERE country = 'Austria' OR city = 'Vienna'
+  LIMIT 10;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Distribution centers different from 'Memphis TN' nor 'Savannah GA’.&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.distribution_centers</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display all the distribution centers that are not 'Memphis TN' nor 'Savannah GA’.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name != 'Memphis TN'
+        AND name != 'Savannah GA'; -- name <> 'Memphis TN' and name <> 'Savannah GA';
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°2 — 10 orders of more than 2 items, created in August 2022, and made by women&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.orders</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays up to 10 orders of more than 2 items, created in August 2022 and made by women.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  order_id,
+        created_at,
+        status,
+        num_of_item,
+        gender
+  
+  FROM  bigquery-public-data.thelook_ecommerce.orders
+  WHERE num_of_item > 2
+        AND (created_at BETWEEN '2022-08-01 00:00:00 UTC' AND '2022-08-31 23:59:59 UTC')
+        AND gender = 'F'
+  
+  LIMIT 10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°3 — Products containing ‘dna’ in their name&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.products</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays all products that contain ‘dna’ in their name, regardless of the case.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-3.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id,
+        name
+  FROM  bigquery-public-data.thelook_ecommerce.products
+  WHERE name LIKE '%dna%'
+        OR name LIKE '%Dna%'
+        OR name LIKE '%DNa%'
+        OR name LIKE '%DNA%'
+        OR name LIKE '%dNa%'
+        OR name LIKE '%dNA%'
+        OR name LIKE '%dnA%'
+        OR name LIKE '%DnA%';
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

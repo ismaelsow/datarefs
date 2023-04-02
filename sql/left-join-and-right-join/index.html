@@ -1,0 +1,209 @@
+---
+layout: ref
+title: SQL LEFT JOIN and SQL RIGHT JOIN
+description: "A SQL LEFT JOIN is a type of JOIN where matching rows, AND non-matching rows from the left table, are combined with matching rows from the right table to create a new table. SQL RIGHT JOIN follows the same logic in reverse"
+previous_ref: /sql/inner-join/
+next_ref: /sql/full-join/
+---
+
+<h3 class="h3-big-margin"><span class="grey-text-span">About OUTER JOINs</span></h3>
+<p>A SQL <code>LEFT JOIN</code>, or <code>LEFT OUTER JOIN</code>, is a type of <code>JOIN</code> where <strong>matching rows, AND non-matching rows from the left table</strong>, are combined with matching rows, <strong>and only matching rows</strong> from the right table to create a new table. <strong>The non-matching rows in the right table are ignored</strong>.<p>
+<p>The matching is usually done using an identifier column that's present in both tables. For example, rows where <code>table_1.primary_key_x = table_2.foreign_key_x</code>.</p>
+<p>The syntax looks like this: <code>SELECT column A, column B, ..., column N FROM table_1 LEFT JOIN table_2 ON matching_set_of_conditions</code>.</p>
+
+<p>SQL <code>RIGHT JOIN</code>, or simply <code>RIGHT OUTER JOIN</code>, follows the same logic in reverse. It's not often used since you can accomplish the same results by switching the order of the tables in your <code>LEFT JOIN</code>.</p>
+
+<p>👉 Check out <a href="https://joins.spathon.com/" target="_blank">Visual JOIN</a> to see a visual representation of how it works.</p>
+<p>Now observe carefully the results of the following queries.</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT      users.id AS users_id, orders.user_id AS orders_user_id
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  LEFT JOIN bigquery-public-data.thelook_ecommerce.orders
+  ON        users.id = orders.user_id;
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /><p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<p>
+  <pre>
+    <code class="language-sql">
+SELECT        users.id AS users_id, events.id AS events_id
+  FROM        bigquery-public-data.thelook_ecommerce.users
+  RIGHT JOIN  bigquery-public-data.thelook_ecommerce.events
+  ON          users.id = events.user_id
+  
+  WHERE events.id IN (504328, 943261, 1436668,494251, 2117349, 1041573, 1615717, 2372632)
+  ORDER BY RAND();
+    </code>
+  </pre>
+</p>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /><p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — Users with no orders&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+  <p>bigquery-public-data.thelook_ecommerce.orders</p>
+
+  <h4>Task</h4>
+  <p>Write a query that shows users who never ordered anything.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      users.id
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  LEFT JOIN bigquery-public-data.thelook_ecommerce.orders
+  ON        users.id = orders.user_id
+  WHERE     orders.order_id IS NULL;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°2 — Users with no events&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+  <p>bigquery-public-data.thelook_ecommerce.events</p>
+
+  <h4>Task</h4>
+  <p>Write a query that shows users who never generated any events.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      users.id
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  LEFT JOIN bigquery-public-data.thelook_ecommerce.events
+  ON        users.id = events.user_id
+  WHERE     events.id IS NULL;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°3 — Percentage of inactive users&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+  <p>bigquery-public-data.thelook_ecommerce.events</p>
+
+  <h4>Task</h4>
+  <p>Write a query that shows the percentage of inactive users (users with no events).</p>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>inactive_users</th><th>total_users</th><th>inactive_users_percent</th></thead>
+      <tbody>
+        <tr><td>20154</td><td>100000</td><td>20.15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH inactive_users as
+  (   SELECT      COUNT(users.id) as user_count
+        FROM      bigquery-public-data.thelook_ecommerce.users
+        LEFT JOIN bigquery-public-data.thelook_ecommerce.events
+        ON        users.id = events.user_id
+        WHERE     events.id IS NULL
+  )
+
+SELECT  (SELECT user_count FROM inactive_users) AS inactive_users,
+        (SELECT COUNT(*) FROM bigquery-public-data.thelook_ecommerce.users users) AS total_users,
+        ROUND(
+          ((SELECT user_count FROM inactive_users)
+          / (SELECT count(*) FROM bigquery-public-data.thelook_ecommerce.users users)) * 100,
+          2) AS inactive_users_percent;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="hard-problem-text-span">N°4 — ARPU per city&nbsp;🔥</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+  <p>bigquery-public-data.thelook_ecommerce.order_items</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display:</p>
+  <ul>
+    <li>the city</li>
+    <li>the total number of users from this city</li>
+    <li>the total revenue generated by users from this city</li>
+    <li>the average revenue per user for this city (ARPU)</li>
+    <li>results should be sorted by ARPU in descending order.</li>
+    <li>ARPU for cities with no revenue should be 0 (check the last records)</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-4-1.png" class="lesson-img" /></p> 
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+WITH city_stats AS
+  (  SELECT     city,
+                COUNT(DISTINCT user_id) AS total_users,
+                ROUND(SUM(CASE WHEN sale_price IS NOT NULL THEN sale_price ELSE 0 END), 2) AS total_revenue,
+      
+      FROM      bigquery-public-data.thelook_ecommerce.users
+      LEFT JOIN bigquery-public-data.thelook_ecommerce.order_items
+      ON        users.id = order_items.user_id
+      GROUP BY  city
+  )
+
+SELECT      city,
+            total_users,
+            total_revenue,
+            ROUND(COALESCE(SAFE_DIVIDE(total_revenue, total_users), 0), 2) AS arpu
+  FROM      city_stats
+  ORDER BY  arpu DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

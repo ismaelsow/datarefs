@@ -1,0 +1,22 @@
+<head>
+  <title>{{ page.title }}</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link href="/assets/css/prism.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css">
+  {% if page.page_type == 'landing_page' %}
+    <link rel="stylesheet" href="/assets/css/landing-page.css">
+  {% endif %}
+
+  <meta name="description" content="{{ page.description }}">
+
+  <meta property="og:title" content="{{ page.title }}" />
+  <meta property="og:description" content="Datarefs is a Free SQL course and reference." />
+  <meta property="og:url" content="{{ page.url }}" />
+  <meta property="og:image" content="/assets/images/thumbnail.png" />
+
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="Datarefs is a Free SQL course and reference.">
+  <meta name="twitter:image" content="/assets/images/thumbnail.png">
+  <meta name="twitter:card" content="summary_large_image">
+</head>

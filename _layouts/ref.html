@@ -1,0 +1,39 @@
+<html>
+  {% include header.html %} 
+
+  <body>
+    <section class="container top-section">
+      <div class="row">
+        <div class="col-lg-3"></div>
+
+        <div class="col-xs-12 col-lg-6">
+          {% include navigation.html %}
+          <h1 class="lesson-title">{{ page.title }}</h1>
+          {{ content }}
+        </div>
+
+        <div class="col-lg-3"></div>
+      </div>  
+    </section> 
+
+    <section class="container customer-lesson-navigation" style="padding-top:56px">
+      <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-xs-12 col-lg-6">
+          <div class="lesson-navigation">
+            <div><a href="{{ page.previous_ref }}">⇐ Previous reference</a></div>
+            {% if page.next_ref %}
+              <div><a href="{{ page.next_ref }}">Next reference ⇒</a></div>
+            {% endif %}
+          </div>
+          <div class="newsletter-form">
+            <script async data-uid="3adeccc753" src="https://datatrefs.ck.page/3adeccc753/index.js"></script>
+          </div> 
+        </div>
+        <div class="col-lg-3"></div>
+      </div> 
+    </section>
+
+    {% include footer.html %} 
+  </body>
+</html>

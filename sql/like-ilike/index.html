@@ -1,0 +1,159 @@
+---
+layout: ref
+title: SQL LIKE, SQL ILIKE
+description: "Among the operators that can be used in the WHERE clause’s set of conditions, are SQL LIKE and SQL ILIKE. They are used to match a text (also called strings) pattern."
+previous_ref: /sql/where-and-comparison-operators/
+next_ref: /sql/in/
+---
+
+<p>Among the operators that can be used in the <code>WHERE</code> clause’s set of conditions, are SQL <code>LIKE</code> and SQL <code>ILIKE</code>. They are used to match a text (also called strings) pattern. The '%' character is called <strong>wildcard</strong> and is used as a catch-all symbol for any text. The '_' character is used as wildcard for any 1-character piece of text: for example 'c', or 'K', or '_'.</p>
+
+<!-- Example 1 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name LIKE 'New%';
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+<!-- Example 2 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name LIKE '%New%';
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+<!-- Example 3 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 3</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name LIKE '%T_';
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-3.png" class="lesson-img" /></p>
+
+<!-- Example 4 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 4</span></h3>
+<p><code>LIKE</code> is case-sensitive. If we tweak the previous example by using ‘%t_’ instead of ‘%T_’, we get no results returned.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name LIKE '%t_';
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-4.png" class="lesson-img" /></p>
+
+<!-- Example 5 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 5</span></h3>
+<p>If you want to match text (also called strings) in a case-insensitive way, you can use the <code>ILIKE</code> operator. <code>ILIKE</code> is not supported by BigQuery but we'll see in another lesson a BigQuery function that does the same thing. We’ll also implement a workaround in one of our practice problems.</p>
+<p><img src="images/example-5.png" class="lesson-img" /></p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°1 — 10 events where uri contains ‘product’&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.events</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays 10 events where the <strong>uri</strong> column contains ‘product’. Note that a URI is similar to a URL, it's a web page unique address.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id,
+        event_type,
+        browser,
+        traffic_source,
+        uri
+  
+  FROM  bigquery-public-data.thelook_ecommerce.events
+  WHERE uri LIKE '%product%'
+  LIMIT 10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°2 — 10 users with email addresses ending with '.org'&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays 10 users whose email addresses ends with '.org'.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id, first_name, last_name, email
+  FROM  bigquery-public-data.thelook_ecommerce.users
+  WHERE email LIKE '%.org'
+  LIMIT 10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="easy-problem-text-span">N°3 — 10 users with last name starting with 'W'&nbsp;🧂</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays 10 users whose last names start with 'W'.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-3.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id, first_name, last_name, email
+  FROM  bigquery-public-data.thelook_ecommerce.users
+  WHERE last_name LIKE 'W%'
+  LIMIT 10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

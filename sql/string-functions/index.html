@@ -1,0 +1,457 @@
+---
+layout: ref
+title: SQL string functions
+description: "The STRING type represents textual data, defined in quotes like for example: 'I am a string'. Numerous SQL functions help us deal with strings."
+previous_ref: /sql/numbers/ 
+next_ref: /sql/regex/
+---
+
+<h3 class="h3-big-margin"><span class="grey-text-span">Definition and function reference</span></h3>
+<p>The STRING type represents textual data. We use single quotes to define new strings manually (also called string literals), for ex: <code>'a good example'</code>. Numerous SQL functions help us deal with strings.</p>
+<p><a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/string_functions" target="_blank">👉 Check out the official documentation and function reference</a></p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">TRIM</span></h3>
+<p><code>TRIM</code> removes the white spaces at the beginning and at the end of a string of characters.</code></p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT TRIM('  Good morning  ');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>Good morning</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">CONCAT</span></h3>
+<p><code>CONCAT</code> allows us to "stick" several strings one after another and returns a new string from that.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT CONCAT("Good", " ", "morning!");
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>Good morning!</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">CONTAINS_SUBSTR</span></h3>
+<p><code>CONTAINS_SUBSTR</code> is functionally similar to the <code>ILIKE</code> operator we mentionned in a <a href="/sql/like-ilike/">previous reference</a>. It checks if a string contains another one, in a <strong>case-insensitive</strong> way.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT CONTAINS_SUBSTR('Good morning', 'MORNING');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>true</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">STARTS_WITH</span></h3>
+<p><code>STARTS_WITH</code> checks if a string starts with another one, in a <strong>case-sensitive</strong> way.</p>
+<p><strong>Type</strong> the queries below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run them. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT STARTS_WITH('Good morning', 'Good');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>true</td></tr>
+    </tbody>
+  </table>
+</p>
+<p><strong>Example results</strong>:</p>
+<pre>
+  <code class="language-sql">
+SELECT STARTS_WITH('Good morning', 'good');
+  </code>
+</pre>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>false</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">ENDS_WITH</span></h3>
+<p><code>ENDS_WITH</code> checks if a string ends with another one, in a <strong>case-sensitive</strong> way.</p>
+<p><strong>Type</strong> the queries below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run them. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT ENDS_WITH('Good morning', 'morning');
+  </code>
+</pre>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>true</td></tr>
+    </tbody>
+  </table>
+</p>
+<pre>
+  <code class="language-sql">
+SELECT ENDS_WITH('Good morning', 'MORNING');
+  </code>
+</pre>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>false</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">LEFT</span></h3>
+<p><code>LEFT</code> returns a given number of characters from a string, starting from the beginning of the string. It takes as parameters the string itself and the number of characters we want to return from it.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT LEFT('Good morning', 4);
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>Good</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">RIGHT</span></h3>
+<p><code>RIGHT</code> returns a given number of characters from a string, starting from the end of the string. It takes as parameters the string itself and the number of characters we want to return from it.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT RIGHT('Good morning', 7);
+  </code>
+</pre>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>morning</td></tr>
+    </tbody>
+  </table>
+</p>
+<p><strong>Example results</strong>:</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">LENGTH</span></h3>
+<p><code>LENGTH</code> returns the number of characters that a string contains.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT LENGTH('Good morning');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>12</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">LOWER</span></h3>
+<p><code>LOWER</code> converts a string into a lower-cased version.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT LOWER('GOOD MoRnInG');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>good morning</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">UPPER</span></h3>
+<p><code>LOWER</code> converts a string into a upper-cased version.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT UPPER('GOOD MoRnInG');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>GOOD MORNING</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">REPLACE</span></h3>
+<p><code>REPLACE</code> substitutes a string s1 by a string s2, in a given string.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT REPLACE('Good morning', 'morning', 'afternoon');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>Good afternoon</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">SPLIT</span></h3>
+<p><code>SPLIT</code> uses a separator given as parameter to "cut" a string into several parts. It returns an <code>ARRAY</code>.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT SPLIT('Good morning', ' ');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/split.png" class="lesson-img" /></p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">STRPOS</span></h3>
+<p><code>STRPOS</code> returns the position of a substring in a given string.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT STRPOS('Good morning', 'Good');
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>1</td></tr>
+    </tbody>
+  </table>
+</p>
+
+<h3 class="h3-big-margin"><span class="grey-text-span">SUBSTR</span></h3>
+<p><code>STRPOS</code> returns a substring starting from a specific position in a given string.</p>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT SUBSTR('Good morning', 5);
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p>
+  <table class="table-with-header">
+    <thead><th>f0_</th></thead>
+    <tbody>
+      <tr><td>morning</td></tr>
+    </tbody>
+  </table>
+</p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°1 — Full name and initials of the users&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display the <strong>id</strong>, the full name and the initials of the users.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  id,
+        CONCAT(first_name, ' ', last_name) AS full_name,
+        UPPER(CONCAT(LEFT(first_name, 1), LEFT(last_name, 1))) AS initials
+  FROM  bigquery-public-data.thelook_ecommerce.users;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°2 — Email domain&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the email domain</li>
+    <li>and capitalize the <strong>last_name</strong> column</li>
+    <li>The results should be sorted by last name in descending order</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-2.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      id,
+            first_name,
+            UPPER(last_name) AS last_name,
+            email,
+            SUBSTR(email, STRPOS(email, '@')+1) AS domain
+  
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  ORDER BY  last_name DESC;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°3 — Number of unique email domains&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will display the number of unique email domains.</p>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>email_domains</th></thead>
+      <tbody>
+        <tr><td>3</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  COUNT(DISTINCT(SUBSTR(email, STRPOS(email, '@')+1))) AS email_domains
+  FROM  bigquery-public-data.thelook_ecommerce.users;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°4 — Most popular email domain&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <p>Write a query that will show the most popular email domain as well as the number of corresponding emails.</p>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>domain</th><th>emails</th></thead>
+      <tbody>
+        <tr><td>example.net</td><td>33756</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT      SUBSTR(email, STRPOS(email, '@')+1) AS domain,
+            COUNT(*) AS emails
+  FROM      bigquery-public-data.thelook_ecommerce.users
+  GROUP BY  domain
+  ORDER BY  emails DESC
+  LIMIT     1;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°5 — Number of lower cased and upper cased emails&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.users</p>
+
+  <h4>Task</h4>
+  <ul>
+    <li>Write a query that will display the total number of emails</li>
+    <li>as well as the number of lower cased and upper cased emails.</li>
+  </ul>
+  
+  <h4>Example results</h4>
+  <div class="table-wrapper">
+    <table class="table-with-header">
+      <thead><th>all_emails</th><th>lower_case_emails</th><th>upper_case_emails</th></thead>
+      <tbody>
+        <tr><td>100000</td><td>100000</td><td>0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  COUNT(*) AS all_emails,
+        COUNT(CASE WHEN email = LOWER(email) THEN email END) AS lower_case_emails,
+        COUNT(CASE WHEN email = UPPER(email) THEN email END) AS upper_case_emails
+  FROM  bigquery-public-data.thelook_ecommerce.users;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

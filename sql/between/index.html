@@ -1,0 +1,66 @@
+---
+layout: ref
+title: SQL BETWEEN
+description: "We can use the SQL BETWEEN operator to create interval-based conditions."
+previous_ref: /sql/in/
+next_ref: /sql/isnull/
+---
+
+<p>We can use the SQL <code>BETWEEN</code> operator to create interval-based conditions.</p>
+
+<!-- Example 1 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 1</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.orders
+  WHERE order_id BETWEEN 1 AND 5;
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-1.png" class="lesson-img" /></p>
+
+<!-- Example 2 -->
+<h3 class="h3-big-margin"><span class="grey-text-span">Example 2</span></h3>
+<p><strong>Type</strong> the query below in the <a href="https://console.cloud.google.com/bigquery" target="_blank">BigQuery console</a> and run it. Don't copy paste. 😉</p>
+<pre>
+  <code class="language-sql">
+SELECT  *
+  FROM  bigquery-public-data.thelook_ecommerce.distribution_centers
+  WHERE name BETWEEN 'A' AND 'N';
+  </code>
+</pre>
+<p><strong>Example results</strong>:</p>
+<p><img src="images/example-2.png" class="lesson-img" /></p>
+
+
+<!-- PRACTICE PROBLEMS -->
+{% include practice_problems_intructions.html %}
+
+<h3 class="h3-big-margin"><span class="medium-problem-text-span">N°1 — 10 orders created in September 2022&nbsp;&nbsp;🌶️</span></h3>
+<div class="problem">
+  <h4>Tables</h4>
+  <p>bigquery-public-data.thelook_ecommerce.orders</p>
+
+  <h4>Task</h4>
+  <p>Write a query that displays 10 orders created in september 2022. You can use the format you see in the <strong>created_at</strong> column for your date condition.</p>
+  
+  <h4>Example results</h4>
+  <p><img src="images/result-1.png" class="lesson-img" /></p>
+
+  <h4>Solution</h4>
+  <div class="collapsible-parent">
+    <p><a href="#" class="hide-control">🙈 Hide</a><a href="#" class="show-control">👀 Show</a></p>
+    <div class="practice-problems-instructions collapsible-item">
+      <pre>
+        <code class="language-sql">
+SELECT  order_id, created_at, status, num_of_item, gender
+  FROM  bigquery-public-data.thelook_ecommerce.orders
+  WHERE created_at BETWEEN '2022-09-01 00:00:00 UTC' AND '2022-09-30 23:59:59 UTC'
+  LIMIT 10;
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

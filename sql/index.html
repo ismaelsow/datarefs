@@ -1,0 +1,145 @@
+---
+layout: default
+title: "Datarefs SQL tutorial"
+description: "Datarefs is a SQL course + reference that focuses on practice. If you read the short lessons and do the carefully paced practice problems, you'll get good at SQL pretty fast."
+---
+
+<h1 class="landing-page-title"><span class="black-text-span">Become fluent in SQL</span><br>Finally 😉</h1>
+<h3 style="padding-top:48px;">SQL tutorial for <span class="green-text-span">SELECT people</span>.</h3>
+
+<div class="intro">
+  <p><span style="font-weight:800">Hi there 👋</span></p>
+  <p>It's easy to learn <strong>SQL syntax</strong> online. Finding resources to <strong>practice real-world SQL problem-solving</strong> is much more difficult.</p>
+  <p>Datarefs is a <strong>SQL course + reference</strong> that focuses on <strong>practice</strong>. If you read the short lessons and do the <strong> carefully paced practice problems</strong>, you'll get good at SQL pretty fast.</p>
+  <p>It's a complete course for data analysis and reporting with SQL. I cover <strong>advanced subjects</strong> like window functions, user-defined functions, recursive queries, pivot etc. (<a href="#table-of-contents">👉 see table of contents below</a>).</p>
+
+  <p><img src="window-functions/images/windows.png" style="border-radius:12px" /></p>
+
+  <div class="chapter">
+    <h3><span class="grey-text-span">What flavor of SQL will I learn?</span></h3>
+    <p>You'll be using <strong>Google Standard SQL</strong> and the <strong>Google BigQuery</strong> database. The SQL syntax variations that exist between database engines (BigQuery, Snowflake, Oracle, PostgreSQL, MySQL, Microsoft SQL Server, etc.) are small and easy to pick up.</p>
+  </div>
+
+  <div class="chapter">
+    <h3><span class="grey-text-span">What datasets will I be working with?</span></h3>
+    <p>Thanks to the use of BigQuery, you'll be working with <strong>real datasets</strong> hosted on Google Cloud. No more contrived, toy-like examples and datasets. Also, nothing to install on your computer. You'll not get stuck trying to make your instructor's pet database work on your machine.</p>
+    <p>During the lessons and exercises, you'll query 3 main datasets loaded in Google BigQuery:</p>
+    <ul>
+      <li><strong><a href="https://console.cloud.google.com/marketplace/product/bigquery-public-data/thelook-ecommerce" target="blank">theLook eCommerce</a></strong>: TheLook is a fictitious eCommerce clothing site developed by the Looker team. The dataset contains information about customers, products, orders, logistics, web events, and digital marketing campaigns.
+</li>
+      <li><strong><a href="https://developers.google.com/analytics/bigquery/web-ecommerce-demo-dataset" target="blank">The BigQuery Google Analytics 4 sample</a></strong>: this dataset contains 3 months' worth of Google Analytics event data (partially obfuscated). The data was collected on the Google Merchandise Store (an online store that sells Google-branded merchandise).
+</li>
+      <li><strong><a href="https://www.kaggle.com/datasets/danofer/dbpedia-classes" target="blank">DBPedia Classes</a></strong>: a project aiming to extract structured content from the information created in Wikipedia. This is an extract of the data that provides hierarchical categories ("classes") for almost 350K wikipedia articles.</li>
+    </ul>
+  </div>
+
+</div> 
+</div>
+<div class="col-lg-3"></div>
+</div>  
+</section>
+
+<section class="container table-of-contents">
+  <div class="row">
+    <div class="col-lg-3"></div>
+
+    <div class="col-xs-12 col-lg-6">
+
+      <h2 id="table-of-contents"><span class="green-text-span">Table of Contents</span></h2>
+
+      <h3><span class="grey-text-span">Getting started</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="readme/">README</a></li>
+          <li><a href="key-concepts/">Key SQL concepts</a></li>
+          <li><a href="big-query-setup-and-dataset-exploration/">BigQuery setup and dataset exploration</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">Basic selections</span></h3>
+      <div class="chapter">
+        <ul> 
+          <li><a href="select-from-query/">SQL SELECT FROM QUERY</a></li>
+          <li><a href="limit-select-top/">SQL LIMIT & SELECT TOP</a></li>
+          <li><a href="where-and-comparison-operators/">SQL WHERE and comparison operators</a></li>
+          <li><a href="like-ilike/">SQL LIKE, SQL ILIKE</a></li>
+          <li><a href="in/">SQL IN</a></li>
+          <li><a href="between/">SQL BETWEEN</a></li>
+          <li><a href="isnull/">SQL IS NULL</a></li>
+          <li><a href="and-or/">SQL AND OR</a></li>
+          <li><a href="not/">SQL NOT</a></li>
+          <li><a href="order-by/">SQL ORDER BY</a></li>
+          <li><a href="offset/">SQL OFFSET</a></li>
+          <li><a href="case-when/">SQL CASE WHEN</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">Aggregations</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="sql-count-sum-min-max-avg-functions/">SQL COUNT, SUM, MIN, MAX, and AVG functions</a></li>
+          <li><a href="group-by/">SQL GROUP BY</a></li>
+          <li><a href="having/">SQL HAVING</a></li>
+          <li><a href="distinct/">SQL DISTINCT</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">Common types and functions</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="main-data-types-and-type-conversion/">Main SQL data types and type conversion</a></li>
+          <li><a href="numbers/">SQL numbers</a></li>
+          <li><a href="string-functions/">SQL string functions</a></li>
+          <li><a href="regex/">SQL regex</a></li>
+          <li><a href="date-functions/">SQL date functions</a></li>
+          <li><a href="null-values/">SQL NULL values</a></li>
+          <li><a href="record/">SQL RECORD</a></li>
+          <li><a href="arrays/">SQL Arrays</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">JOINs, subqueries and set operations</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="cte-subquery/">SQL CTE (common table expression) and SQL subquery</a></li>
+          <li><a href="cross-join/">SQL CROSS JOIN</a></li>
+          <li><a href="inner-join/">SQL INNER JOIN</a></li>
+          <li><a href="left-join-and-right-join/">SQL LEFT JOIN and RIGHT JOIN</a></li>
+          <li><a href="full-join/">SQL FULL JOIN</a></li>
+          <li><a href="self-join/">SQL SELF JOIN</a></li>
+          <li><a href="union-and-union-all/">SQL UNION and SQL UNION ALL</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">Modular queries</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="user-defined-functions/">SQL user-defined functions</a></li>
+          <li><a href="table-functions/">SQL table functions</a></li>
+          <li><a href="view/">SQL view</a></li>
+          <li><a href="recursive-query/">SQL recursive query</a></li>
+        </ul>
+      </div>
+
+      <h3><span class="grey-text-span">Window functions and PIVOT operator</span></h3>
+      <div class="chapter">
+        <ul>
+          <li><a href="window-functions/">SQL window functions</a></li>
+          <li><a href="row-number/">SQL ROW_NUMBER</a></li>
+          <li><a href="ntile/">SQL NTILE</a></li>
+          <li><a href="rank/">SQL RANK</a></li>
+          <li><a href="dense-rank/">SQL DENSE_RANK</a></li>
+          <li><a href="lag/">SQL LAG</a></li>
+          <li><a href="lead/">SQL LEAD</a></li>
+          <li><a href="first-value/">SQL FIRST_VALUE</a></li>
+          <li><a href="last-value/">SQL LAST_VALUE and window frame specification</a></li>
+          <li><a href="nth-value/">SQL NTH_VALUE</a></li>
+          <li><a href="percent-rank/">SQL PERCENT_RANK</a></li>
+          <li><a href="pivot/">SQL PIVOT</a></li>
+        </ul>
+
+      </div>
+    </div>
+    <div class="col-lg-3"></div>
+  </div> 
+</section> 
